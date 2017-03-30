@@ -723,7 +723,14 @@ export default class Scope {
 
     // register references
     for (const ref of state.references) {
-      const binding = ref.scope.getBinding(ref.node.name);
+      let binding;
+      // for switch statements, their discriminant takes the scope of parent
+      if (ref.key === "discriminant") {
+        binding = ref.scope.parent.getBinding(ref.node.name);
+      } else {
+        binding = ref.scope.getBinding(ref.node.name);
+      }
+
       if (binding) {
         binding.reference(ref);
       } else {

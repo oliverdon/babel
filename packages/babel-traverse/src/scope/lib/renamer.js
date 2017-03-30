@@ -2,8 +2,15 @@ import Binding from "../binding";
 import * as t from "babel-types";
 
 const renameVisitor = {
-  ReferencedIdentifier({ node }, state) {
-    if (node.name === state.oldName) {
+
+  SwitchStatement(path, state) {
+    if ((path.node.discriminant.name === state.oldName)) {
+      path.node.discriminant.name = state.newName;
+    }
+  },
+
+  ReferencedIdentifier({ node, key }, state) {
+    if ((node.name === state.oldName) && (key !== "discriminant")) {
       node.name = state.newName;
     }
   },
